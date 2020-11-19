@@ -9,18 +9,21 @@ namespace IO_GRA_graczChodzenieGrafika
 
     class BMB_Grapgics
     {
-        public Graphics g;
-        public Graphics gR;
-        public Bitmap btm;
+        private Graphics g;
+        private Graphics gR;
+        private Bitmap btm;
         public Bitmap btmR;
 
         public int drawingId = 0;
-        public int toDrawId = 0;
+        private int toDrawId = 0;
         public bool drawing = true;
 
-        public int height = 750;
-        public int width = 750;
-        public Thread drawingThread;
+        private int height = 750;
+        private int width = 750;
+        private Thread drawingThread;
+
+        private Orbiting exampleObjectWithSomethingToDraw;
+        public bool pressE = false;
 
 
         public BMB_Grapgics(int height, int width)
@@ -36,11 +39,17 @@ namespace IO_GRA_graczChodzenieGrafika
             drawingThread = new Thread(Draw);
             drawingThread.IsBackground = true;
             drawingThread.Start();
+
+            exampleObjectWithSomethingToDraw = new Orbiting();
         }
 
         /// <summary>
         /// Metoda rysująca wszystkie obiekty na bitmapie [btm]. 
-        /// Jest wywoływana tylko jeżeli jest coś nowego do rysowania [toDraw]
+        /// Jest wywoływana tylko jeżeli jest coś nowego do rysowania [toDrawIdThread, toDrawId] 
+        /// (zapobiega obciążaniu procesora niepotrzebnie)(patrz zastosowanie w Form1.cs)
+        /// 
+        /// Tutaj łączą się bitmapy z różnych obiektów odpowiadających za różne rzeczy w grze.
+        /// Pracuje na oddzeilnym wątku.
         /// </summary>
         private void Draw()
         {
@@ -50,7 +59,7 @@ namespace IO_GRA_graczChodzenieGrafika
 
 
 
-            Orbiting exampleObjectWithSomethingToDraw = new Orbiting();
+            
 
             RectangleF areaToSytuatePictureOnBitmap;
             areaToSytuatePictureOnBitmap = new RectangleF(0, 0, this.height, this.width);
@@ -59,6 +68,10 @@ namespace IO_GRA_graczChodzenieGrafika
             while (this.drawing)
             {
 
+                if (this.pressE == true)
+                {
+                    this.handleE();
+                }
 
                 if (toDrawIdThread == this.toDrawId)
                 {
@@ -82,7 +95,6 @@ namespace IO_GRA_graczChodzenieGrafika
 
         }
 
-        
 
         public void nextDrawing()
         {
@@ -101,6 +113,17 @@ namespace IO_GRA_graczChodzenieGrafika
                 this.toDrawId = 0;
             }
         }
+
+        /// <summary>
+        /// przewiduję dodatkową klasę do obsługi inputu
+        /// </summary>
+        public void handleE()
+        {
+            this.exampleObjectWithSomethingToDraw.direction();
+        }
+
+
+        
 
     }
 

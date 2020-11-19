@@ -21,6 +21,9 @@ namespace OrbitingObjectExample
         private RectangleF circle;
         PointF loc;
 
+        private float add;
+        public bool toggleE;
+
         public Orbiting()
         {
             this.angle = 0.0f;
@@ -33,6 +36,8 @@ namespace OrbitingObjectExample
 
             this.btm = new Bitmap(height, width);
             this.g = Graphics.FromImage(btm);
+            this.add = 1.0f;
+            this.toggleE = false;
         }
 
         public Bitmap generate()
@@ -47,11 +52,20 @@ namespace OrbitingObjectExample
 
             this.g.DrawEllipse(pen, circle);
 
+            if (this.toggleE == true)
+            {
+                this.direction();
+            }
 
-            angle += 1f;
+            angle += add;
             if (angle > 360)
             {
                 angle -= 360f;
+            }
+
+            if (angle < 0)
+            {
+                angle += 360f;
             }
 
             return btm;
@@ -63,6 +77,11 @@ namespace OrbitingObjectExample
             float y = (float)(radious * Math.Sin(angle * Math.PI / 180f)) + orgin.Y;
 
             return new PointF(x, y);
+        }
+
+        public void direction()
+        {
+            this.add *= -1;
         }
     }
 

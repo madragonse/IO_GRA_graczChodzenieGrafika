@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using NUnit.Framework;
+using System;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace IO_GRA_graczChodzenieGrafika
 {
@@ -26,12 +22,16 @@ namespace IO_GRA_graczChodzenieGrafika
         Bitmap btm;
         bool drawing = true;
 
+        BMB_Grapgics gg;
+
         private void Form1_Load(object sender, EventArgs e)
         {
+            gg = new BMB_Grapgics(750, 750);
             fG = CreateGraphics();
             th = new Thread(Draw);
             th.IsBackground = true;
             th.Start();
+
         }
 
         public void Draw()
@@ -39,7 +39,7 @@ namespace IO_GRA_graczChodzenieGrafika
             fG.Clear(Color.Black);
             PointF img = new PointF(0, 0);
 
-            BMB_Grapgics gg = new BMB_Grapgics(750, 750);
+            
 
             int drawId = -1;    
 
@@ -47,7 +47,15 @@ namespace IO_GRA_graczChodzenieGrafika
             {
                 
 
-                if (drawId == gg.drawingId)
+                /*if (Keyboard.IsKeyDown(Key.E))
+                    {
+                        gg.handleE();
+                    }*/
+
+                    
+
+
+                    if (drawId == gg.drawingId)
                 {
 
                     continue;
@@ -66,42 +74,7 @@ namespace IO_GRA_graczChodzenieGrafika
             
 
 
-            /*float angle = 0.0f;
-            PointF org = new PointF(500, 500);
-            float rad = 250;
-            Pen pen = new Pen(Color.White, 3.0f);
-            RectangleF area = new RectangleF(0, 0, 1000, 1000);
-            RectangleF circle = new RectangleF(0, 0, 50, 50);
-
-            PointF loc = PointF.Empty;
-            PointF img = new PointF(20, 20);
-
-            fG.Clear(Color.Black);
-
-            while (drawing)
-            {
-                g.Clear(Color.Black);
-
-                g.DrawEllipse(pen, area);
-                loc = this.circlePoint(rad, angle, org);
-
-                circle.X = loc.X - (circle.Width / 2) + area.X;
-                circle.Y = loc.Y - (circle.Width / 2) + area.Y;
-
-                g.DrawEllipse(pen, circle);
-
-
-
-
-
-                angle += 1.32f;
-                if (angle > 360)
-                {
-                    angle -= 360f;
-                }
-                fG.DrawImage(btm, img);
-
-            }*/
+            
 
         }
 
@@ -111,6 +84,37 @@ namespace IO_GRA_graczChodzenieGrafika
             float y = (float)(radious * Math.Sin(angle * Math.PI / 180f)) + orgin.Y;
 
             return new PointF(x, y);
+        }
+
+        /// <summary>
+        /// Jest to jeden z rodzaji wywołań w wątku STA, czyli takim do obsługi UI
+        /// </summary>
+        /// 
+        /// <param name="sender"></param>
+        /// nie wiem co to jest, chodź się domyślam
+        /// 
+        /// <param name="e"></param>
+        /// nie wiem co to jest, chodź się domyślam
+        private void Form1_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            
+            //klikając "E" dzieje się magia
+            if (Keyboard.IsKeyDown(Key.E))
+            {
+                gg.pressE = true;
+            }
+
+
+        }
+
+        private void Form1_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+
+            if (Keyboard.IsKeyUp(Key.E))
+            {
+                gg.pressE = false;
+            }
+
         }
     }
 }
