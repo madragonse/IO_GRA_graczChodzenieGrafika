@@ -1,7 +1,8 @@
-﻿using System;
+﻿
+using System;
 using System.Drawing;
 
-namespace OrbitingObjectExample
+namespace IO_GRA_graczChodzenieGrafika
 {
 
 
@@ -76,9 +77,9 @@ namespace OrbitingObjectExample
         }
 
 
-        public void inputs(BMB_Inputs bottons)
+        public void process(BMB_Input buttons)
         {
-            if (buttons.buttonW == true)
+            if (buttons.buttons["W"] == true)
             {
                 this.add *= -1;
             }
@@ -90,3 +91,7 @@ namespace OrbitingObjectExample
 
 
 }
+
+
+
+

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading;
-using OrbitingObjectExample;
 
 
 namespace IO_GRA_graczChodzenieGrafika
@@ -17,30 +16,45 @@ namespace IO_GRA_graczChodzenieGrafika
         public int drawingId = 0;
         private int toDrawId = 0;
         public bool drawing = true;
+        public bool processing = true;
 
         private int height = 750;
         private int width = 750;
         private Thread drawingThread;
+        private Thread processingThread;
 
+        public BMB_Input input;
+
+        //Lista obiektów generująca bitmapy do narysowania
         private Orbiting exampleObjectWithSomethingToDraw;
+
+        
         public bool pressE = false;
 
 
-        public BMB_Grapgics(int height, int width)
+        public BMB_Grapgics(int height, int width, BMB_Input pointerToInput)
         {
             this.height = height;
             this.width = width;
+
+            this.input = pointerToInput;
 
             this.btm = new Bitmap(height, width);
             this.btmR = new Bitmap(height, width);
             this.g = Graphics.FromImage(btm);
             this.gR = Graphics.FromImage(btmR);
 
-            drawingThread = new Thread(Draw);
+            drawingThread = new Thread(this.Draw);
             drawingThread.IsBackground = true;
             drawingThread.Start();
 
+            processingThread = new Thread(this.Process);
+            processingThread.IsBackground = true;
+            processingThread.Start();
+
+
             exampleObjectWithSomethingToDraw = new Orbiting();
+
         }
 
         /// <summary>
@@ -53,7 +67,6 @@ namespace IO_GRA_graczChodzenieGrafika
         /// </summary>
         private void Draw()
         {
-
             int toDrawIdThread = 0;
 
 
@@ -68,11 +81,6 @@ namespace IO_GRA_graczChodzenieGrafika
             while (this.drawing)
             {
 
-                if (this.pressE == true)
-                {
-                    this.handleE();
-                }
-
                 if (toDrawIdThread == this.toDrawId)
                 {
                     Thread.Sleep(1);
@@ -80,6 +88,7 @@ namespace IO_GRA_graczChodzenieGrafika
                 }
                 toDrawIdThread = this.toDrawId;
 
+                this.g.Clear(Color.Black);
 
                 this.g.DrawImage(exampleObjectWithSomethingToDraw.generate(), areaToSytuatePictureOnBitmap);
 
@@ -94,7 +103,6 @@ namespace IO_GRA_graczChodzenieGrafika
 
 
         }
-
 
         public void nextDrawing()
         {
@@ -114,15 +122,14 @@ namespace IO_GRA_graczChodzenieGrafika
             }
         }
 
-        /// <summary>
-        /// przewiduję dodatkową klasę do obsługi inputu
-        /// </summary>
-        public void handleE()
+        private void Process()
         {
-            this.exampleObjectWithSomethingToDraw.direction();
+            Thread.Sleep(500);
+            while (processing == true)
+            {
+                exampleObjectWithSomethingToDraw.process(this.input);
+            }
         }
-
-
         
 
     }

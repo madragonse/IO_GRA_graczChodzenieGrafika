@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -16,46 +15,39 @@ namespace IO_GRA_graczChodzenieGrafika
             this.Height = 800;
         }
 
-        Thread th;
-        Graphics g;
+        Thread graphicsThread;
         Graphics fG;
-        Bitmap btm;
-        bool drawing = true;
+        bool workign = true;
 
         BMB_Grapgics gg;
+        BMB_Input input;
+
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            gg = new BMB_Grapgics(750, 750);
+            input = new BMB_Input();
+            gg = new BMB_Grapgics(750, 750, input);
+
             fG = CreateGraphics();
-            th = new Thread(Draw);
-            th.IsBackground = true;
-            th.Start();
+            graphicsThread = new Thread(BMB);
+            graphicsThread.IsBackground = true;
+            graphicsThread.Start();
 
         }
 
-        public void Draw()
+        public void BMB()
         {
-            fG.Clear(Color.Black);
+
             PointF img = new PointF(0, 0);
-
-            
-
             int drawId = -1;    
 
-            while (drawing)
+
+            while (workign)
             {
                 
 
-                /*if (Keyboard.IsKeyDown(Key.E))
-                    {
-                        gg.handleE();
-                    }*/
-
-                    
-
-
-                    if (drawId == gg.drawingId)
+                if (drawId == gg.drawingId)
                 {
 
                     continue;
@@ -71,20 +63,9 @@ namespace IO_GRA_graczChodzenieGrafika
             }
             
 
-            
-
-
-            
 
         }
 
-        public PointF circlePoint(float radious, float angle, PointF orgin)
-        {
-            float x = (float)(radious * Math.Cos(angle * Math.PI / 180f)) + orgin.X;
-            float y = (float)(radious * Math.Sin(angle * Math.PI / 180f)) + orgin.Y;
-
-            return new PointF(x, y);
-        }
 
         /// <summary>
         /// Jest to jeden z rodzaji wywołań w wątku STA, czyli takim do obsługi UI
@@ -98,10 +79,24 @@ namespace IO_GRA_graczChodzenieGrafika
         private void Form1_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             
-            //klikając "E" dzieje się magia
-            if (Keyboard.IsKeyDown(Key.E))
+            if (Keyboard.IsKeyDown(Key.W))
             {
-                gg.pressE = true;
+                input.buttons["W"] = true;
+            }
+
+            if (Keyboard.IsKeyDown(Key.S))
+            {
+                input.buttons["S"] = true;
+            }
+
+            if (Keyboard.IsKeyDown(Key.A))
+            {
+                input.buttons["A"] = true;
+            }
+
+            if (Keyboard.IsKeyDown(Key.D))
+            {
+                input.buttons["D"] = true;
             }
 
 
@@ -110,9 +105,24 @@ namespace IO_GRA_graczChodzenieGrafika
         private void Form1_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
 
-            if (Keyboard.IsKeyUp(Key.E))
+            if (Keyboard.IsKeyUp(Key.W))
             {
-                gg.pressE = false;
+                input.buttons["W"] = false;
+            }
+
+            if (Keyboard.IsKeyUp(Key.S))
+            {
+                input.buttons["S"] = false;
+            }
+
+            if (Keyboard.IsKeyUp(Key.A))
+            {
+                input.buttons["A"] = false;
+            }
+
+            if (Keyboard.IsKeyUp(Key.D))
+            {
+                input.buttons["D"] = false;
             }
 
         }
